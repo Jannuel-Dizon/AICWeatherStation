@@ -31,39 +31,40 @@ void setup() {
   }
 
     // register the receive callback
-  LoRa.onReceive(Received);
+  // LoRa.onReceive(Received);
 
   // put the radio into receive mode
-  LoRa.receive();
+  // LoRa.receive();
 }
 
 void loop() {
-  // int packetSize = LoRa.parsePacket();
-  // if (packetSize)
-  // {
-  //   // read packet
-  //   KuyaKim.clearString();
-  //   while (LoRa.available()) 
-  //   {
-  //     KuyaKim.JSONString += (char)LoRa.read();
-  //   }
+  int packetSize = LoRa.parsePacket();
+  if (packetSize)
+  {
+    // read packet
+    KuyaKim.clearString();
+    while (LoRa.available()) 
+    {
+      KuyaKim.JSONString += (char)LoRa.read();
+    }
 
-  //   Serial.println("");
+    Serial.println("");
   
-  //   if(KuyaKim.deSerialize() == EXIT_SUCCESS)
-  //   {
-  //     KuyaKim.updateValues();
+    if(KuyaKim.deSerialize() == EXIT_SUCCESS)
+    {
+      KuyaKim.updateValues();
 
-  //     // KimCard.updateCards(KuyaKim);
-  //   }
-  // } else
-  // {
-  //   Serial.println("No packets received");
-  // }
+      // KimCard.updateCards(KuyaKim);
+    }
+  } else
+  {
+    Serial.println("No packets received");
+  }
 
-  // delay(500);
+  delay(500);
 }
 
+/*
 void Received(int packetSize)
 {
   KuyaKim.clearString();
@@ -80,3 +81,4 @@ void Received(int packetSize)
     // KimCard.updateCards(KuyaKim);
   }
 }
+*/
