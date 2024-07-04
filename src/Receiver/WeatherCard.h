@@ -20,6 +20,8 @@
 #define SSID "Weather_Station"
 #define password "aicisthebest"
 
+/* Hello World! */
+
 struct WeatherCard
 {
 	const String ssid = SSID; // SSID
