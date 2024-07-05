@@ -3,7 +3,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-#include "../header/AICWeather.h"
 #include "../header/WeatherInfo.h"
 // #include "../header/WeatherCard.h"
 #include "../header/aicimages.h"
