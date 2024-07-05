@@ -18,14 +18,14 @@
 #include "WeatherInfo.h"
 
 #define SSID "Weather_Station"
-#define password "aicisthebest"
+#define PASSWORD "aicisthebest"
 
 /* Hello World! */
 
 struct WeatherCard
 {
 	const String ssid = SSID; // SSID
-	const String password = password; // Password
+	const String password = PASSWORD; // Password
 	AsyncWebServer server;
 	ESPDash dashboard;
 
