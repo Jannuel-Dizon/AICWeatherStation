@@ -3,8 +3,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-#include "header/WeatherInfo.h"
-// #include "header/WeatherCard.h"
+#include "../header/WeatherInfo.h"
+// #include "../header/WeatherCard.h"
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISO
