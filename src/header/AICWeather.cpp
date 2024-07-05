@@ -48,8 +48,7 @@ AICWeather::AICWeather()
 	dht22 = new DHT22(15);
 }
 
-AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2, 
-												int windSpdPin, int dhtPin)
+AICWeather::AICWeather(int temp_rainPin, int temp_windDirPin1, int temp_windDirPin2, int temp_windSpdPin, int temp_dhtPin)
 {
   //Initialization routine
   _anemometerCounter = 0;
@@ -57,11 +56,11 @@ AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2,
   _gustIdx = 0;
   _vaneSampleIdx = 0;
   
-  _rainPin = rainPin;
-  _windDirPin1 = windDirPin1;
-  _windDirPin2 = windDirPin2;
-  _windSpdPin = windSpdPin;
-  _dhtPin = dhtPin;
+  _rainPin = temp_rainPin;
+  _windDirPin1 = temp_windDirPin1;
+  _windDirPin2 = temp_windDirPin2;
+  _windSpdPin = temp_windSpdPin;
+  _dhtPin = temp_dhtPin;
 
   dht22 = new DHT22(_dhtPin);
 

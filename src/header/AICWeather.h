@@ -47,8 +47,7 @@ class AICWeather
 {
   public:
 	AICWeather();
-  AICWeather(int rainPin, int windDirPin1, int windDirPin2, 
-  						int windSpdPin, int dhtPin);
+  AICWeather(int, int, int, int, int);
     
 	float getWindSpeed();
 	float getWindGust();
