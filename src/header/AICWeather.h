@@ -22,11 +22,10 @@
 
 #include "Arduino.h"
 #include <DHT22.h>
-// #include <BMP388_DEV.h>
 
 #define windDirMaxIter 10
 
-// For getting Heat Index
+// constants for Heat Index
 #define c1 -42.379
 #define c2 2.04901523
 #define c3 10.14333127
@@ -37,23 +36,29 @@
 #define c8 8.5282E-4
 #define c9 -1.99E-6
 
+// constants for ATM Pressure
+#define p0 101325
+#define h0 0
+#define g 9.80665 
+#define M 0.0289644
+#define R 8.31432
 
 class AICWeather
 {
   public:
 	AICWeather();
   AICWeather(int rainPin, int windDirPin1, int windDirPin2, 
-  						int windSpdPin, int dhtPin, int bmp388Pin_SDA = 21, int bmp388Pin_SCL = 22);
+  						int windSpdPin, int dhtPin);
     
-	float getRain();
-	float getWindDirection();
 	float getWindSpeed();
 	float getWindGust();
+	float getWindDirection();
+	float getRain();
 	float getTemp();
 	float getHumidity();
 	float getHeatIndex();
-	float getPressure();
 	float getAltitude();
+	float getAtmPressure();
 	
 	void update();
 	
@@ -70,17 +75,15 @@ class AICWeather
 
 	DHT22 *dht22;
 
-	// BMP388_DEV *bmp388;
-	
-	float _rain;
-	float _windDir;
 	float _windSpd;
 	float _windSpdMax;
+	float _windDir;
+	float _rain;
 	float _temp;
 	float _humidity;
 	float _heatIndex;
-	float _pressure;
 	float _altitude;
+	float _atmPressure;
 	
 	unsigned long _nextCalc;
 	unsigned long _timer;
@@ -91,6 +94,7 @@ class AICWeather
 	unsigned int _gust[30]; //Array of 50 wind speed values to calculate maximum gust speed.
 	unsigned int _gustIdx;
 	
+	float _calcAtmPressure();
 	float _calcHeatIndex();
 	float _readRainAmmount();
   float _readWindDir();

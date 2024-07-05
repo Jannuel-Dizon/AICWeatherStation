@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
+#include "AICWeather.h"
+
 // Sample JSONString
 // "{\"wind_speed\":\"10\",\"wind_gust\":\"20\",\"wind_direction\":\"180\",\"total_rain\":\"5\",\"temperature\":\"35\",\"humidity\":\"75\",\"heat_index\":\"38\",\"atm_pressure\":\"1.009\"}"
 
@@ -35,9 +37,12 @@ struct WeatherInfo
   float atmPressure;
 
   WeatherInfo();
+  int deSerialize();
+  void serialize();
   void clearString();
   void updateValues();
-  int deSerialize();
+  void updateValues(AICWeather *ws1);
+  void updateDocs();
   float getWindSpeed();
   float getWindGust();
   float getWindDirection();
@@ -66,6 +71,11 @@ int WeatherInfo::deSerialize()
   return EXIT_SUCCESS;
 }
 
+void WeatherInfo::serialize()
+{
+  serializeJson(doc, JSONString);
+}
+
 void WeatherInfo::clearString()
 {
   JSONString = "";
@@ -80,24 +90,31 @@ void WeatherInfo::updateValues()
   temperature = doc["temperature"];
   humidity = doc["humidity"];
   heatIndex = doc["heat_index"];
-  // atmPressure = doc["atm_pressure"];
+  atmPressure = doc["atm_pressure"];
+}
 
-  // Serial.print("windSpeed: ");
-  Serial.println(windSpeed);
-  // Serial.print("windGust: ");
-  Serial.println(windGust);
-  // Serial.print("windDirection: ");
-  Serial.println(windDirection);
-  // Serial.print("totalRain: ");
-  Serial.println(totalRain);
-  // Serial.print("temperature: ");
-  Serial.println(temperature);
-  // Serial.print("humidity: ");
-  Serial.println(humidity);
-  // Serial.print("heatIndex: ");
-  Serial.println(heatIndex);
-  // // Serial.print("atmPressure: ");
-  // Serial.println(atmPressure);
+void WeatherInfo::updateValues(AICWeather *ws1)
+{
+  windSpeed = ws1->getWindSpeed();
+  windGust = ws1->getWindGust();
+  windDirection = ws1->getWindDirection();
+  totalRain = ws1->getRain();
+  temperature = ws1->getTemp();
+  humidity = ws1->getHumidity();
+  heatIndex = ws1->getHeatIndex();
+  atmPressure = ws1->getAtmPressure();
+}
+
+void WeatherInfo::updateDocs()
+{
+  doc["wind_speed"] = windSpeed;
+  doc["wind_gust"] = windGust;
+  doc["wind_direction"] = windDirection;
+  doc["total_rain"] = totalRain;
+  doc["temperature"] = temperature;
+  doc["humidity"] = humidity;
+  doc["heat_index"] = heatIndex;
+  doc["atm_pressure"] = atmPressure;
 }
 
 float WeatherInfo::getWindSpeed()

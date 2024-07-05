@@ -47,8 +47,6 @@ void loop() {
     {
       KuyaKim.JSONString += (char)LoRa.read();
     }
-
-    Serial.println("");
   
     if(KuyaKim.deSerialize() == EXIT_SUCCESS)
     {

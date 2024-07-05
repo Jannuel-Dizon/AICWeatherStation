@@ -20,7 +20,6 @@
 #include <Arduino.h>
 #include <cmath>
 #include <DHT22.h>
-// #include <BMP388_DEV.h>
 #include "AICWeather.h"
 
 #define DEBOUNCE_TIME 15
@@ -47,11 +46,10 @@ double windDirection;
 AICWeather::AICWeather()
 {
 	dht22 = new DHT22(15);
-	// bmp388 = new BMP388_DEV(21, 22);
 }
 
 AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2, 
-												int windSpdPin, int dhtPin, int bmp388Pin_SDA, int bmp388Pin_SCL)
+												int windSpdPin, int dhtPin)
 {
   //Initialization routine
   _anemometerCounter = 0;
@@ -65,15 +63,10 @@ AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2,
   _windSpdPin = windSpdPin;
   _dhtPin = dhtPin;
 
-  dht22 = new DHT22(_dhtPin);  
-//   bmp388 = new BMP388_DEV(bmp388Pin_SDA, bmp388Pin_SCL);
+  dht22 = new DHT22(_dhtPin);
 
   pinMode(_rainPin, INPUT_PULLUP);
   pinMode(_windSpdPin, INPUT_PULLUP);
-
-//   bmp388->begin();
-//   bmp388->setTimeStandby(TIME_STANDBY_1280MS);
-//   bmp388->startNormalConversion();
 }
 
 //The update function updates the values of all of the sensor variables. This should be run as frequently as possible
@@ -95,20 +88,27 @@ void AICWeather::update()
 		_nextCalc = _timer + CALC_INTERVAL;
  
 		//UPDATE ALL VALUES
-		// bmp388->getMeasurements(_temp, _pressure, _altitude)
-		_rain += _readRainAmmount();
 		_windSpd = _readWindSpd();
 		_windDir = _getWindDir();
+		_rain += _readRainAmmount();
 		_temp = dht22->getTemperature();
 		_humidity = dht22->getHumidity();
 		_heatIndex = _calcHeatIndex();
+		_altitude = 1;
+		_atmPressure = _calcAtmPressure();
 	}
 }
 
-//Returns the ammount of rain since the last time the getRain function was called.
-float AICWeather::getRain()
+//Returns the wind speed.
+float AICWeather::getWindSpeed()
 {
-	return _rain/1000.0;
+	return _windSpd/10.0;
+}
+
+//Returns the maximum wind gust speed. 
+float AICWeather::getWindGust()
+{
+	return _windSpdMax/10.0;
 }
 
 //Returns the direction of the wind in degrees.
@@ -117,18 +117,10 @@ float AICWeather::getWindDirection()
 	return _windDir;
 }
 
-//Returns the wind speed.
-float AICWeather::getWindSpeed()
+//Returns the ammount of rain since the last time the getRain function was called.
+float AICWeather::getRain()
 {
-	float temp = _windSpd; 
-	return temp;
-}
-
-//Returns the maximum wind gust speed. 
-float AICWeather::getWindGust()
-{
-	float temp = _windSpdMax; 
-	return temp;
+	return _rain/1000.0;
 }
 
 float AICWeather::getTemp()
@@ -146,14 +138,23 @@ float AICWeather::getHeatIndex()
 	return _heatIndex;
 }
 
-float AICWeather::getPressure()
+float AICWeather::getAtmPressure()
 {
-	return _pressure;
+	return _atmPressure;
 }
 
 float AICWeather::getAltitude()
 {
 	return _altitude;
+}
+
+float AICWeather::_calcAtmPressure()
+{
+	// Output is in hPa
+	float T = _temp + 273.15;
+	float temp = p0 * exp((-g*M(_altitude - h0))/(R*T));
+	temp /= 100.0;
+	return temp;
 }
 
 float AICWeather::_calcHeatIndex()

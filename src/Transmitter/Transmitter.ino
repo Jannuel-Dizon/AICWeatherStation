@@ -71,8 +71,10 @@ void loop(){
   {
     nextCalc = timer + CALC_INTERVAL;
 
-    KuyaKim.updateValue(&ws1);
+    KuyaKim.clearString();
 
+    KuyaKim.updateValue(&ws1);
+    
     KuyaKim.updateDocs();
     KuyaKim.serialize();
     
