@@ -8,8 +8,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-SSD1306Wire display(0x3C, SDA, SCL); 
-
 //Sensor Pins
 #define rainPin 4
 #define wdPin1 13
@@ -28,12 +26,13 @@ SSD1306Wire display(0x3C, SDA, SCL);
 
 int CALC_INTERVAL = 10000;
 
-SSD1306Wire display(0x3c, SDA, SCL);
-
 int counter;
 
 unsigned long nextCalc;
 unsigned long timer;
+
+SSD1306Wire display(0x3C, SDA, SCL); 
+
 // AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2, int windSpdPin, int dht11Pin)
 AICWeather ws1(rainPin, wdPin1, wdPin2, wsPin, dhtPin);
 WeatherInfo KuyaKim;
@@ -79,7 +78,7 @@ void loop(){
 
     KuyaKim.clearString();
 
-    KuyaKim.updateValue(&ws1);
+    KuyaKim.updateValues(&ws1);
     
     KuyaKim.updateDocs();
     KuyaKim.serialize();

@@ -138,21 +138,21 @@ float AICWeather::getHeatIndex()
 	return _heatIndex;
 }
 
-float AICWeather::getAtmPressure()
-{
-	return _atmPressure;
-}
-
 float AICWeather::getAltitude()
 {
 	return _altitude;
+}
+
+float AICWeather::getAtmPressure()
+{
+	return _atmPressure;
 }
 
 float AICWeather::_calcAtmPressure()
 {
 	// Output is in hPa
 	float T = _temp + 273.15;
-	float temp = p0 * exp((-g*M(_altitude - h0))/(R*T));
+	float temp = AIC_p0 * exp((-AIC_g*AIC_M*(_altitude - AIC_h0))/(AIC_R*T));
 	temp /= 100.0;
 	return temp;
 }

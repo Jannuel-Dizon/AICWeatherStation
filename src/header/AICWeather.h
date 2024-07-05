@@ -17,8 +17,8 @@
 
 */
 
-#ifndef AICWeather_h
-#define AICWeather_h
+#ifndef AICWEATHER_H
+#define AICWEATHER_H
 
 #include "Arduino.h"
 #include <DHT22.h>
@@ -37,11 +37,11 @@
 #define c9 -1.99E-6
 
 // constants for ATM Pressure
-#define p0 101325
-#define h0 0
-#define g 9.80665 
-#define M 0.0289644
-#define R 8.31432
+#define AIC_p0 101325
+#define AIC_h0 0
+#define AIC_g 9.80665 
+#define AIC_M 0.0289644
+#define AIC_R 8.31432
 
 class AICWeather
 {
