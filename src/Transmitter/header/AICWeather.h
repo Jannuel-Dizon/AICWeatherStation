@@ -22,20 +22,20 @@
 
 #include "Arduino.h"
 #include <DHT22.h>
-#include <BMP388_DEV.h>
+// #include <BMP388_DEV.h>
 
 #define windDirMaxIter 10
 
 // For getting Heat Index
-#define c1 −42.379
+#define c1 -42.379
 #define c2 2.04901523
 #define c3 10.14333127
-#define c4 −0.22475541
-#define c5 −6.83783E−3
-#define c6 −5.481717E−2
-#define c7 1.22874E−3
-#define c8 8.5282E−4
-#define c9 −1.99E−6
+#define c4 -0.22475541
+#define c5 -6.83783E-3
+#define c6 -5.481717E-2
+#define c7 1.22874E-3
+#define c8 8.5282E-4
+#define c9 -1.99E-6
 
 
 class AICWeather
@@ -70,7 +70,7 @@ class AICWeather
 
 	DHT22 *dht22;
 
-	BMP388_DEV *bmp388;
+	// BMP388_DEV *bmp388;
 	
 	float _rain;
 	float _windDir;
@@ -95,7 +95,7 @@ class AICWeather
 	float _readRainAmmount();
   float _readWindDir();
   float _getWindDir();
-  float _readWindSpd();`
+  float _readWindSpd();
 	
 };
 

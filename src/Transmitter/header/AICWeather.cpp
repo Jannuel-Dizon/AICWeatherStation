@@ -20,7 +20,7 @@
 #include <Arduino.h>
 #include <cmath>
 #include <DHT22.h>
-#include <BMP388_DEV.h>
+// #include <BMP388_DEV.h>
 #include "AICWeather.h"
 
 #define DEBOUNCE_TIME 15
@@ -47,11 +47,11 @@ double windDirection;
 AICWeather::AICWeather()
 {
 	dht22 = new DHT22(15);
-	bmp388 = new BMP388_DEV(21, 22);
+	// bmp388 = new BMP388_DEV(21, 22);
 }
 
 AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2, 
-												int windSpdPin, int dhtPin, int bmp388Pin_SDA = 21, int bmp388Pin_SCL = 22)
+												int windSpdPin, int dhtPin, int bmp388Pin_SDA, int bmp388Pin_SCL)
 {
   //Initialization routine
   _anemometerCounter = 0;
@@ -66,14 +66,14 @@ AICWeather::AICWeather(int rainPin, int windDirPin1, int windDirPin2,
   _dhtPin = dhtPin;
 
   dht22 = new DHT22(_dhtPin);  
-  bmp388 = new BMP388_DEV(bmp388Pin_SDA, bmp388Pin_SCL);
+//   bmp388 = new BMP388_DEV(bmp388Pin_SDA, bmp388Pin_SCL);
 
   pinMode(_rainPin, INPUT_PULLUP);
   pinMode(_windSpdPin, INPUT_PULLUP);
 
-  bmp388->begin();
-  bmp388->setTimeStandby(TIME_STANDBY_1280MS);
-  bmp388->startNormalConversion();
+//   bmp388->begin();
+//   bmp388->setTimeStandby(TIME_STANDBY_1280MS);
+//   bmp388->startNormalConversion();
 }
 
 //The update function updates the values of all of the sensor variables. This should be run as frequently as possible
@@ -120,15 +120,15 @@ float AICWeather::getWindDirection()
 //Returns the wind speed.
 float AICWeather::getWindSpeed()
 {
-	float temp = _windSpd/10.0; 
+	float temp = _windSpd; 
 	return temp;
 }
 
 //Returns the maximum wind gust speed. 
 float AICWeather::getWindGust()
 {
-	float temp = _windSpdMax / 10.0; 
-	return temp % 10.0;
+	float temp = _windSpdMax; 
+	return temp;
 }
 
 float AICWeather::getTemp()
@@ -160,8 +160,10 @@ float AICWeather::_calcHeatIndex()
 {
 	float T = (_temp * 1.8) + 32;
 
-	float _tempHI = c1 + c2*T + c3*(_humidity) + c4*T*(_humidity) + c5*(T^2) + c6*(_humidity^2) + c7*(T^2)*(_humidity) + c8*T*(_humidity^2) + c9*(T^2)*(_humidity^2);
-
+	float _tempHI = c1 + c2*T + c3*_humidity + c4*T*_humidity + c5*pow(T, 2) + c6*pow(_humidity, 2) + c7*pow(T, 2)*_humidity + c8*T*pow(_humidity, 2) + c9*pow(T, 2)*pow(_humidity, 2);
+	
+	_tempHI = (_tempHI-32)*(0.555555555555556);
+	
 	return _tempHI;
 }
 
