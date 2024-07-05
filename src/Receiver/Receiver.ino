@@ -3,8 +3,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-#include "WeatherInfo.h"
-// #include "WeatherCard.h"
+#include "header/WeatherInfo.h"
+// #include "header/WeatherCard.h"
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISO
@@ -30,7 +30,7 @@ void setup() {
     while (1);
   }
 
-    // register the receive callback
+  // register the receive callback
   // LoRa.onReceive(Received);
 
   // put the radio into receive mode
