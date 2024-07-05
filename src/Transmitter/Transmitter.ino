@@ -1,11 +1,14 @@
 #include "../header/AICWeather.h"
 #include "../header/WeatherInfo.h"
+#include "../header/aicimages.h"
 
 //Libraries Included
 #include <Wire.h>
 #include "SSD1306Wire.h"
 #include <SPI.h>
 #include <LoRa.h>
+
+SSD1306Wire display(0x3C, SDA, SCL); 
 
 //Sensor Pins
 #define rainPin 4
@@ -40,11 +43,14 @@ void setup(){
   while (!Serial);
 
   display.init();
-  // display.flipScreenVertically();
+  display.flipScreenVertically();
   display.setContrast(255);
-
-  display.setFont(ArialMT_Plain_24);
-  display.println("Transmitter");
+  display.drawXbm(0, 0, 128, 64, epd_bitmap_AIC_WSTRANSMITTER);
+  display.invertDisplay();
+  delay(2500);
+  display.display();
+  delay(2500);
+  display.invertDisplay();
 
   SPI.begin(SCK, MISO, MOSI, SS);
   LoRa.setPins(SS, RST, DI0);

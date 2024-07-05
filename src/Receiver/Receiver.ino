@@ -1,10 +1,11 @@
 #include <Arduino.h>
-
+#include "SSD1306Wire.h"
 #include <SPI.h>
 #include <LoRa.h>
 
 #include "../header/WeatherInfo.h"
 // #include "../header/WeatherCard.h"
+#include "../header/aicimages.h"
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISO
@@ -12,6 +13,8 @@
 #define SS      18   // GPIO18 -- SX1278's CS
 #define RST     14   // GPIO14 -- SX1278's RESET
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
+
+SSD1306Wire display(0x3C, SDA, SCL); 
 
 WeatherInfo KuyaKim;
 // WeatherCard KimCard;
@@ -22,6 +25,16 @@ void setup() {
   while (!Serial);
 
   Serial.println("LoRa Receiver");
+
+  display.init();
+  display.setContrast(255);
+  display.flipScreenVertically();
+  display.drawXbm(0, 0, 128, 64, epd_bitmap_AIC_WSRECEIVER);
+  display.invertDisplay();
+  delay(2500);
+  display.display();
+  delay(2500);
+  display.invertDisplay();
 
   SPI.begin(SCK, MISO, MOSI, SS);
   LoRa.setPins(SS, RST, DI0);
