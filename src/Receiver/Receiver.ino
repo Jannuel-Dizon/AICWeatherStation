@@ -5,6 +5,7 @@
 
 #include "../header/WeatherInfo.h"
 // #include "../header/WeatherCard.h"
+#include "../header/SIM800_ESP32.h"
 #include "../header/aicimages.h"
 
 #define SCK     5    // GPIO5  -- SX1278's SCK
@@ -14,13 +15,19 @@
 #define RST     14   // GPIO14 -- SX1278's RESET
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 
+#define RXD2 16
+#define TXD2 17
+
 SSD1306Wire display(0x3C, SDA, SCL); 
 
+SIM800_ESP32 SMS_Sender;
 WeatherInfo KuyaKim;
 // WeatherCard KimCard;
-
-void setup() {
+  
+void setup() {  
+  
   Serial.begin(115200);
+  // Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
 
   while (!Serial);
 
