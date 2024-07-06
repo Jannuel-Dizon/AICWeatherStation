@@ -1,4 +1,5 @@
 #include "../header/AICWeather.h"
+#include "../header/AICWeather.cpp"
 #include "../header/WeatherInfo.h"
 #include "../header/aicimages.h"
 
@@ -24,7 +25,7 @@
 #define RST     14   // GPIO14 -- SX1278's RESET
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 
-int CALC_INTERVAL = 10000;
+int Transmitter_CALC_INTERVAL = 10000;
 
 int counter;
 
@@ -61,12 +62,12 @@ void setup(){
 
   attachInterrupt(digitalPinToInterrupt(rainPin), ws1.countRain, FALLING); //ws1.countRain is the ISR for the rain gauge.
   attachInterrupt(digitalPinToInterrupt(wsPin), ws1.countAnemometer, FALLING); //ws1.countAnemometer is the ISR for the anemometer.
-  nextCalc = millis() + CALC_INTERVAL;
+  nextCalc = millis() + Transmitter_CALC_INTERVAL;
 }
 
 void loop(){
   // if (Serial.available() > 0) {
-  // CALC_INTERVAL = Serial.read();
+  // Transmitter_CALC_INTERVAL = Serial.read();
   // }
   timer = millis();
 
@@ -74,7 +75,7 @@ void loop(){
 
   if(timer > nextCalc)
   {
-    nextCalc = timer + CALC_INTERVAL;
+    nextCalc = timer + Transmitter_CALC_INTERVAL;
 
     KuyaKim.clearString();
 
