@@ -43,6 +43,7 @@ struct WeatherInfo
   void updateValues();
   void updateValues(AICWeather *ws1);
   void updateDocs();
+  void printValues();
   float getWindSpeed();
   float getWindGust();
   float getWindDirection();
@@ -115,6 +116,11 @@ void WeatherInfo::updateDocs()
   doc["humidity"] = humidity;
   doc["heat_index"] = heatIndex;
   doc["atm_pressure"] = atmPressure;
+}
+
+void Weather info::printValues()
+{
+  // Lagay mo print lines here
 }
 
 float WeatherInfo::getWindSpeed()
