@@ -71,6 +71,8 @@ void loop() {
     {
       KuyaKim.updateValues();
 
+      KuyaKim.printValues();
+
       // KimCard.updateCards(KuyaKim);
     }
   } else
