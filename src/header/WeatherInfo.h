@@ -42,6 +42,7 @@ struct WeatherInfo
   void clearString();
   void updateValues();
   void updateValues(AICWeather *ws1);
+  void printValues();
   void updateDocs();
   float getWindSpeed();
   float getWindGust();
@@ -115,6 +116,27 @@ void WeatherInfo::updateDocs()
   doc["humidity"] = humidity;
   doc["heat_index"] = heatIndex;
   doc["atm_pressure"] = atmPressure;
+}
+
+void WeatherInfo::printValues()
+{
+  Serial.println();
+  Serial.print("Wind Speed: ");
+  Serial.println(windSpeed);
+  Serial.print("Wind Gust: ");
+  Serial.println(windGust);
+  Serial.print("Wind Direction: ");
+  Serial.println(windDirection);
+  Serial.print("Total Rain: ");
+  Serial.println(totalRain);
+  Serial.print("Temperature: ");
+  Serial.println(temperature);
+  Serial.print("Humidity: ");
+  Serial.println(humidity);
+  Serial.print("Heat Index: ");
+  Serial.println(heatIndex);
+  Serial.print("Atmospheric Pressure: ");
+  Serial.println(atmPressure);
 }
 
 float WeatherInfo::getWindSpeed()

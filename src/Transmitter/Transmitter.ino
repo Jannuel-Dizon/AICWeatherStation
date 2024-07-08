@@ -25,7 +25,7 @@
 #define RST     14   // GPIO14 -- SX1278's RESET
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 
-int Transmitter_CALC_INTERVAL = 10000;
+int Transmitter_CALC_INTERVAL = 1000;
 
 int counter;
 
@@ -43,7 +43,6 @@ void setup(){
   while (!Serial);
 
   display.init();
-  display.flipScreenVertically();
   display.setContrast(255);
   display.drawXbm(0, 0, 128, 64, epd_bitmap_AIC_WSTRANSMITTER);
   display.invertDisplay();

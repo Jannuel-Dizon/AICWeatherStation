@@ -2,35 +2,111 @@
 #include "SSD1306Wire.h"
 #include <SPI.h>
 #include <LoRa.h>
+#include <mySD.h>
 
 #include "../header/WeatherInfo.h"
 // #include "../header/WeatherCard.h"
 #include "../header/SIM800_ESP32.h"
 #include "../header/aicimages.h"
 
-#define SCK     5    // GPIO5  -- SX1278's SCK
-#define MISO    19   // GPIO19 -- SX1278's MISO
-#define MOSI    27   // GPIO27 -- SX1278's MOSI
-#define SS      18   // GPIO18 -- SX1278's CS
-#define RST     14   // GPIO14 -- SX1278's RESET
-#define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
+ext::File root;
 
-#define RXD2 16
-#define TXD2 17
+#define  oRST        16 
+
+#define  SD_CLK     17
+#define  SD_MISO    13
+#define  SD_MOSI    12
+#define  SD_CS      23
+
+#define  LoRa_SCK    5
+#define  LoRa_MISO  19
+#define  LoRa_MOSI  27
+#define  LoRa_CS    18
+#define  LoRa_RST   14    //  LoRa_Reset
+#define  DI0        26
+#define  BAND    868E6 
+#define  Select    LOW   //  Low CS means that SPI device Selected
+#define  DeSelect  HIGH  //  High CS means that SPI device Deselected
+
+#define RXD2 3
+#define TXD2 1
 
 SSD1306Wire display(0x3C, SDA, SCL); 
 
 SIM800_ESP32 SMS_Sender;
 WeatherInfo KuyaKim;
+ext::File sessionFile;   //  SD card filenames are restricted to 8 characters + extension
 // WeatherCard KimCard;
-  
+
+String tempy = "";
+
 void setup() {  
+  // set output pins
+  pinMode(oRST,OUTPUT);
+  pinMode(SD_CS,OUTPUT);
+  pinMode(LoRa_CS,OUTPUT);
+  digitalWrite(LoRa_CS, DeSelect);
+
+  // set GPIO16 Low then High to Reset OLED
+  digitalWrite(oRST, LOW);  
+  delay(50);
+  digitalWrite(oRST, HIGH);
   
   Serial.begin(115200);
 
   while (!Serial);
 
-  Serial.println("LoRa Receiver");
+  Serial.print("Initializing SD card...");
+  digitalWrite(SD_CS, Select);    //  SELECT (Low) SD Card SPI
+/**/
+  if (!SD.begin( SD_CS, SD_MOSI, SD_MISO, SD_CLK )) {
+    Serial.println("initialization failed!");
+    //  now what?
+  } else {
+    Serial.println("initialization done.");
+    delay(1000);
+  }
+  /* open "test.txt" for writing */
+  root = SD.open("datas.txt", FILE_WRITE);
+  if (root) {
+    root.println("TESTING");
+    root.flush();
+    root.close();
+  } else {    //  file open error
+    Serial.println("error opening datas.txt");
+  }
+  delay(100);
+
+  /* after writing, then reopen the file and read it */
+  root = SD.open("datas.txt");
+  if (root) {    /* read from the file to the end of it */
+    while (root.available()) {  // read the file
+      Serial.write(root.read());
+    }
+    root.close();
+  } else {
+    Serial.println("error opening datas.txt");
+  }
+  delay(100);
+
+  //  done testing the SD Card
+  digitalWrite(SD_CS, DeSelect); 
+//  SD.end();
+  delay( 100 ); 
+
+  SPI.begin( LoRa_SCK, LoRa_MISO, LoRa_MOSI, LoRa_CS );
+  LoRa.setPins( LoRa_CS, LoRa_RST, DI0 );
+  digitalWrite(LoRa_CS, Select);   //  SELECT (low) LoRa SPI 
+  Serial.println("LoRa Sender");
+  if (!LoRa.begin(BAND)) {
+    Serial.println("Starting LoRa failed!");
+
+  } else {
+    Serial.println("LoRa Initial OK!");
+    delay(1000);
+  }
+  digitalWrite(LoRa_CS, DeSelect);  
+  Serial.println("Setup done!");
 
   display.init();
   display.setContrast(255);
@@ -42,21 +118,11 @@ void setup() {
   delay(2500);
   display.invertDisplay();
 
-  SPI.begin(SCK, MISO, MOSI, SS);
-  LoRa.setPins(SS, RST, DI0);
 
-  if (!LoRa.begin(868E6)) {
-    while (1);
-  }
-
-  // register the receive callback
-  // LoRa.onReceive(Received);
-
-  // put the radio into receive mode
-  // LoRa.receive();
 }
 
 void loop() {
+  digitalWrite(LoRa_CS, Select);
   int packetSize = LoRa.parsePacket();
   if (packetSize)
   {
@@ -70,16 +136,35 @@ void loop() {
     if(KuyaKim.deSerialize() == EXIT_SUCCESS)
     {
       KuyaKim.updateValues();
-
+      KuyaKim.printValues();
       // KimCard.updateCards(KuyaKim);
     }
-  } else
+    if(tempy != KuyaKim.JSONString)
+    {
+      tempy = KuyaKim.JSONString;  
+      digitalWrite(LoRa_CS, DeSelect);
+      delay(50);         
+      digitalWrite(SD_CS, Select);    
+      root = SD.open("datas.txt", FILE_WRITE);
+      Serial.println(root);
+    }
+    if (root) 
+    {
+      root.println(tempy);
+      root.flush();
+      root.close();   
+    }
+    Serial.println(tempy); 
+    digitalWrite(SD_CS, DeSelect);  
+    delay(500);
+  } 
+  else
   {
-    Serial.println("No packets received");
+    Serial.print(".");
   }
-
   delay(500);
 }
+
 
 /*
 void Received(int packetSize)
