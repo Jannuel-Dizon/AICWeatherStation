@@ -44,6 +44,7 @@ struct WeatherInfo
   void updateValues(AICWeather *ws1);
   void printValues();
   void updateDocs();
+  void printValues();
   float getWindSpeed();
   float getWindGust();
   float getWindDirection();
